@@ -1,6 +1,7 @@
 const display = document.getElementById('display');
 const operators = ['+', '-', '*', '/'];
 let operator;
+let hasOperator;
 // let firstNumber;
 // let secondNumber;
 let numbers = [];
@@ -49,47 +50,56 @@ function operate(operator) {
   } else {
     displayValue = 'Error';
   }
-
+  numbers = [displayValue];
   display.innerText = displayValue;
 }
 
 let numberButtons = document
   .querySelector('.buttons')
   .addEventListener('click', (event) => {
-    console.log(event.target.innerText);
-    // console.log(event.target.innerText === '←');
+    let value = event.target.innerText;
+    console.log(value, operator);
+    // console.log(value === '←');
     // Check if class has value of number
+
+    if (operators.includes(value)) {
+      // If operand exist already and there are two numbers in numbers array calculate the first two numbers with already stored operand
+      saveNumber();
+      console.log(numbers);
+      console.log(operator);
+
+      if (numbers.length === 2 && hasOperator) {
+        console.log('I need to calculate');
+        operate(operator);
+        display.innerText = displayValue;
+        hasOperator = false;
+        return;
+      }
+      operator = value;
+      hasOperator = true;
+      // saveNumber();
+
+      return;
+    }
+
     if (event.target.classList.contains('number')) {
-      display.innerText += event.target.innerText;
+      display.innerText += value;
       displayValue = parseInt(display.innerText);
     }
 
-    if (event.target.innerText === 'C') {
+    if (value === 'C') {
       clearCalc();
     }
 
-    if (event.target.innerText === '←') {
+    if (value === '←') {
       display.innerText = display.innerText.slice(0, -1);
     }
 
-    if (event.target.innerText === '=') {
+    if (value === '=') {
       saveNumber();
 
       operate(operator);
-      display.innerText = displayValue;
-    }
-
-    if (operators.includes(event.target.innerText)) {
-      operator = event.target.innerText;
-      console.log('Arithmetic!!');
-      // if (!firstNumber) {
-      //   firstNumber = displayValue;
-      //   clearCalc();
-      // } else if (!secondNumber) {
-      //   secondNumber = displayValue;
-      //   clearCalc();
-      // }
-      saveNumber();
+      // display.innerText = displayValue;
     }
   });
 
